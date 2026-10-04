@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player de Musica</title>
+    <script src="https://kit.fontawesome.com/537c39df00.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="player.css">
+</head>
+<body>
+    <div id="player">
+     <div class="capa"><img src="capa1.jpg" id="capa"></div>
+     <audio src="musica1.mpeg" id="musica"></audio>
+     <h2 class="nomedamusica">SUNFLOWER</h2>
+     <div class="separar1">
+         <p class="artista">Post Malone, Swae Lee</p>
+         <span class="curtir" id="curtir"><i class="fa-regular fa-heart fa-lg"></i></span>
+     </div>
+     <div class="separar2">
+         <span id="tempoatual">0:00</span>
+         <input type="range"  id="barra"  min="0" max="100" value="0">
+         <span id="duracao">0:00</span>
+     </div>
+     <div class="separar3">
+         <div id="anterior"><i class="fa-solid fa-forward fa-flip-horizontal fa-xl"></i></div>
+         <div id="iniciar"><i class="fa-solid fa-play fa-2xl"></i></div>
+         <div id="proxima"><i class="fa-solid fa-forward fa-xl"></i></div>
+     </div>
+    </div>
+    <script>
+    const player = document.querySelector('#player')
+    const musica = document.querySelector('#musica')
+        const iniciar = document.querySelector('#iniciar')
+        const tempoatual = document.querySelector('#tempoatual')
+        const barra = document.querySelector('#barra')
+        const duracao = document.querySelector('#duracao')
+        const proxima = document.querySelector('#proxima')
+        const anterior = document.querySelector('#anterior')
+        const curtir = document.querySelector('#curtir')
+        const capa = document.querySelector('#capa')
+        const nomeMusica = document.querySelector('.nomedamusica')
+        const artista = document.querySelector('.artista')
+        const musicas = [
+    {
+        musica: "musica1.mpeg",
+        nome: "Sunflower",
+        artista: "Post Malone, Swae Lee",
+        capa: "capa1.jpg"
+    },
+
+    {
+        musica: "musica2.mpeg",
+        nome: "Hide",
+        artista: "Juice WRLD, Seezyn",
+        capa: "capa2.jpg"
+    },
+
+    {
+        musica: "musica3.mpeg",
+        nome: "Scared of the Dark (feat. XXXTENTACION)",
+        artista: "Lil Wayne, Ty Dolla Sign, XXXTENTACION",
+        capa: "capa3.jpg"
+    }
+]
+
+        iniciar.addEventListener("click", function(){
+            if(musica.paused){
+                musica.play()
+                iniciar.innerHTML = '<i class="fa-solid fa-pause fa-2xl"></i>'
+            }
+            else{
+                musica.pause()
+                iniciar.innerHTML = '<i class="fa-solid fa-play fa-2xl"></i>'
+            }
+        })
+
+        musica.addEventListener("timeupdate", function(){
+            const progresso = (musica.currentTime / musica.duration) * 100
+            barra.style.background = `linear-gradient(to right, #fd3030 ${progresso}%, #d2d2d2 ${progresso}%)`
+            barra.value = progresso
+
+            const minutos = Math.floor(musica.currentTime / 60)
+            const segundos = Math.floor(musica.currentTime % 60)
+            tempoatual.textContent = minutos + ":" + segundos.toString().padStart(2, "0")
+
+            const duracaominutos = Math.floor(musica.duration / 60)
+            const duracaosegundos = Math.floor(musica.duration % 60)
+            duracao.textContent = duracaominutos + ":" + duracaosegundos.toString().padStart(2, "0")
+        })
+
+        let musicaAtual = 0
+       musica.src = musicas[musicaAtual].musica
+
+        proxima.addEventListener("click", function(){
+            musicaAtual++
+            if(musicaAtual === 3){
+                musicaAtual = 0
+            }
+
+            musica.src = musicas[musicaAtual].musica
+            capa.src = musicas[musicaAtual].capa
+            nomeMusica.textContent = musicas[musicaAtual].nome
+            artista.textContent = musicas[musicaAtual].artista
+        })
+
+        anterior.addEventListener("click", function(){
+            musicaAtual--
+            if(musicaAtual === -1){
+            musicaAtual = 2
+            }
+
+            musica.src = musicas[musicaAtual].musica
+            capa.src = musicas[musicaAtual].capa
+            nomeMusica.textContent = musicas[musicaAtual].nome
+            artista.textContent = musicas[musicaAtual].artista
+        })
+        musica.addEventListener("loadedmetadata", function(){
+            const duracaominutos = Math.floor(musica.duration / 60)
+            const duracaosegundos = Math.floor(musica.duration % 60)
+            duracao.textContent = duracaominutos + ":" + duracaosegundos.toString().padStart(2, "0")
+        })
+        barra.addEventListener("input", function(){
+    musica.currentTime = (barra.value / 100) * musica.duration
+})
+        
+
+let curtido = false
+
+curtir.addEventListener("click", function(){
+    const icone = curtir.children[0]
+
+    if(curtido){
+        icone.classList.remove("fa-solid")
+        icone.classList.add("fa-regular")
+        curtido = false
+    } else {
+        icone.classList.remove("fa-regular")
+        icone.classList.add("fa-solid")
+        curtido = true
+    }
+})
+
+    </script>
+</body>
+</html>
